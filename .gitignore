@@ -25,9 +25,18 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### Gradle ###
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+
+### Archivos de Log ###
+*.log
+
+### Archivos del Sistema Operativo ###
+.DS_Store  # macOS
+Thumbs.db  # Windows
