@@ -1,5 +1,12 @@
 package com.familiahuecas.backend.service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.familiahuecas.backend.entity.Rol;
 import com.familiahuecas.backend.entity.User;
 import com.familiahuecas.backend.exception.UserAlreadyExistsException;
@@ -7,22 +14,19 @@ import com.familiahuecas.backend.repository.RolRepository;
 import com.familiahuecas.backend.repository.UserRepository;
 import com.familiahuecas.backend.rest.response.UserResponse;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final RolRepository rolRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RolRepository rolRepository) {
+    public UserService(UserRepository userRepository, RolRepository rolRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.rolRepository = rolRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     public UserResponse saveOrUpdate(User user, Set<Long> roleIds) {
         // Verificar si el email ya existe
@@ -37,6 +41,9 @@ public class UserService {
                 .collect(Collectors.toSet());
         user.setRoles(roles);
 
+        
+     // Codificar la contraseña antes de guardar
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         // Guardar el usuario
         User savedUser = userRepository.save(user);
 
