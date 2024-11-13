@@ -1,9 +1,8 @@
 package com.familiahuecas.backend.securiry;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,10 +15,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import io.jsonwebtoken.ExpiredJwtException;
-
-import java.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
 
@@ -45,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Encabezado de autorización no válido o ausente");
+           log.debug("Encabezado de autorización no válido o ausente");
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,17 +56,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             final String jwt = authHeader.substring(7);
             final String userName = jwtService.extractUsername(jwt);
-            System.out.println("Token recibido: " + jwt);
-            System.out.println("Usuario extraído: " + userName);
+            log.debug("Token recibido: " + jwt);
+            log.debug("Usuario extraído: " + userName);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userName != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-                System.out.println("Detalles del usuario cargados: " + userDetails);
+                log.debug("Detalles del usuario cargados: " + userDetails);
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
-                    System.out.println("Token JWT es válido");
+                	log.debug("Token JWT es válido");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -72,22 +75,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-
-                    System.out.println("Autenticación establecida para el usuario: " + userName);
+                    // Establecer el usuario en el ThreadContext
+                    ThreadContext.put("user", userName);
+                   
+                    log.debug("Autenticación establecida para el usuario: " + userName);
                 } else {
-                    System.out.println("Token JWT no es válido");
+                	log.error("Token JWT no es válido");
                 }
             } else {
-                System.out.println("Usuario no extraído o ya autenticado");
+            	log.warn("Usuario no extraído o ya autenticado");
             }
 
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            System.out.println("El token JWT ha expirado: " + e.getMessage());
+        	log.error("El token JWT ha expirado: " + e.getMessage());
             handlerExceptionResolver.resolveException(request, response, null, e);
         } catch (Exception exception) {
-            System.out.println("Se produjo una excepción durante la autenticación: " + exception.getMessage());
+        	log.error("Se produjo una excepción durante la autenticación: " + exception.getMessage());
             handlerExceptionResolver.resolveException(request, response, null, exception);
+        }finally {
+            // Limpiar el ThreadContext al final de la solicitud
+            ThreadContext.clearAll();
         }
     }
 
