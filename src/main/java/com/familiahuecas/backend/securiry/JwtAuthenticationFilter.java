@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import io.jsonwebtoken.ExpiredJwtException;
 
 import java.io.IOException;
 
@@ -81,6 +82,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            System.out.println("El token JWT ha expirado: " + e.getMessage());
+            handlerExceptionResolver.resolveException(request, response, null, e);
         } catch (Exception exception) {
             System.out.println("Se produjo una excepción durante la autenticación: " + exception.getMessage());
             handlerExceptionResolver.resolveException(request, response, null, exception);
