@@ -54,4 +54,11 @@ public class UserService {
                 "OK"
         );
     }
+    
+    public void deleteUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+
+        userRepository.delete(user);
+    }
 }

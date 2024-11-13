@@ -1,15 +1,18 @@
 package com.familiahuecas.backend.rest;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.familiahuecas.backend.entity.User;
 import com.familiahuecas.backend.exception.UserAlreadyExistsException;
 import com.familiahuecas.backend.rest.request.UserRequest;
 import com.familiahuecas.backend.rest.response.UserResponse;
 import com.familiahuecas.backend.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
@@ -42,6 +45,16 @@ public class UserRest {
             UserRequest errorResponse = new UserRequest();
             errorResponse.setMessaje(e.getMessage()); // Asegúrate de asignar el mensaje de error aquí
             return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+    @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUserById(id);
+            return ResponseEntity.ok("Usuario eliminado con éxito");
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al eliminar el usuario: " + e.getMessage());
         }
     }
 }
