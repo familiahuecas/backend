@@ -11,14 +11,14 @@ rm -rf "$OUTPUT_DIR"
 # Crear el directorio output y subdirectorios
 mkdir -p "$OUTPUT_DIR/img"
 
-echo "Saving database-visercomcfg"
-docker save -o "$OUTPUT_DIR/img/database-visercomcfg.tar" database-visercomcfg
-echo "Saving backoffice-visercomcfg"
-docker save -o "$OUTPUT_DIR/img/backoffice-visercomcfg.tar" backoffice-visercomcfg
-echo "Saving backend-visercomcfg"
-docker save -o "$OUTPUT_DIR/img/backend-visercomcfg.tar" backend-visercomcfg
-echo "Saving proxy-visercomcfg"
-docker save -o "$OUTPUT_DIR/img/proxy-visercomcfg.tar" proxy-visercomcfg
+echo "Saving database-familiahuecas"
+docker save -o "$OUTPUT_DIR/img/database-familiahuecas.tar" database-familiahuecas
+echo "Saving backoffice-familiahuecas"
+docker save -o "$OUTPUT_DIR/img/backoffice-familiahuecas.tar" backoffice-familiahuecas
+echo "Saving backend-familiahuecas"
+docker save -o "$OUTPUT_DIR/img/backend-familiahuecas.tar" backend-familiahuecas
+echo "Saving proxy-familiahuecas"
+docker save -o "$OUTPUT_DIR/img/proxy-familiahuecas.tar" proxy-familiahuecas
 
 echo "Copying specific scripts to output"
 # Copiar solo los archivos específicos al directorio de salida
@@ -30,8 +30,8 @@ echo "Copying conf to output"
 cp -r "$BASE_DIR/conf/" "$OUTPUT_DIR/conf/"
 
 echo "Copying certs to output"
-cp -r "$BASE_DIR/certs/" "$OUTPUT_DIR/certs/"
+#cp -r "$BASE_DIR/certs/" "$OUTPUT_DIR/certs/"
 
 echo "====================Compressing Deploy Dir================"
-rm -f ./instaladorvisercomcfg.tar.gz
-tar -czvf ./instaladorvisercomcfg.tar.gz -C "$OUTPUT_DIR" .
+rm -f ./instaladorfamiliahuecas.tar.gz
+tar -czvf ./instaladorfamiliahuecas.tar.gz -C "$OUTPUT_DIR" .

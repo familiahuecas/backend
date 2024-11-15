@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ $# != 1 ]]; then
     echo "Usage: $0 environment"
-    echo "* environment: local | cestel | prod"
+    echo "* environment: local | prod"
 else
   ./clean.sh
   ./build.sh $1

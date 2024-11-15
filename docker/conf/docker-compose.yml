@@ -1,18 +1,18 @@
 version: '3.1'
 services:
-  backend-visercomcfg:
-    container_name: backend-visercomcfg
+  backend-familiahuecas:
+    container_name: backend-familiahuecas
     restart: "no"
-    image: backend-visercomcfg
+    image: backend-familiahuecas
     ports:
       - "8080:8080"
-      - "8443:8443"
+      - "8080:8080"
     env_file:
       - ./backend.env
     links:
-      - database-visercomcfg
+      - database-familiahuecas
     depends_on:
-      - database-visercomcfg
+      - database-familiahuecas
     networks:
       - network
     volumes:
@@ -20,9 +20,9 @@ services:
       - ../log/backend:/log
       - /etc/localtime:/etc/localtime:ro
       
-  database-visercomcfg:
-    container_name: database-visercomcfg
-    image: database-visercomcfg
+  database-familiahuecas:
+    container_name: database-familiahuecas
+    image: database-familiahuecas
     restart: "no"
     environment:
       MYSQL_ROOT_PASSWORD: CalleFalsa123
@@ -37,15 +37,15 @@ services:
     networks:
       - network
 
-  backoffice-visercomcfg:
-    container_name: backoffice-visercomcfg
-    image: backoffice-visercomcfg
+  backoffice-familiahuecas:
+    container_name: backoffice-familiahuecas
+    image: backoffice-familiahuecas
     ports:
       - "5001:80"
     links:
-      - backend-visercomcfg
+      - backend-familiahuecas
     depends_on:
-      - backend-visercomcfg
+      - backend-familiahuecas
     networks:
       - network
     logging:
@@ -58,11 +58,11 @@ services:
 
   
   proxy-visercomcfg:
-    container_name: proxy-visercomcfg
-    image: proxy-visercomcfg
+    container_name: proxy-familiahuecas
+    image: proxy-familiahuecas
     ports:
-      - "8081:8081"
-      - "4438:4438"
+      - "80:80"
+      - "443:443"
     networks:
       - network
     logging:
