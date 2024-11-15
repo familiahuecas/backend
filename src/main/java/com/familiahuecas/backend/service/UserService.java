@@ -1,5 +1,6 @@
 package com.familiahuecas.backend.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -67,5 +68,8 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
 
         userRepository.delete(user);
+    }
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

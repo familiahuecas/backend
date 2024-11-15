@@ -1,13 +1,19 @@
 package com.familiahuecas.backend.rest;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.familiahuecas.backend.entity.Rol;
 import com.familiahuecas.backend.entity.User;
 import com.familiahuecas.backend.exception.UserAlreadyExistsException;
 import com.familiahuecas.backend.rest.request.UserRequest;
@@ -56,5 +62,29 @@ public class UserRest {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al eliminar el usuario: " + e.getMessage());
         }
+    }
+    @GetMapping("/list")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        // Obtener todos los usuarios desde el servicio
+        List<User> users = userService.getAllUsers();
+
+        // Convertir la lista de usuarios a UserResponse
+        List<UserResponse> userResponses = users.stream().map(user -> {
+            // Convertir Set<Rol> a Set<String> con los nombres de los roles
+            Set<String> roleNames = user.getRoles().stream()
+                    .map(Rol::getNombre)
+                    .collect(Collectors.toSet());
+
+            return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getEnabled(),
+                roleNames, // Pasar el Set<String> con los nombres de los roles
+                "OK"
+            );
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(userResponses);
     }
 }

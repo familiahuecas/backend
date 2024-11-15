@@ -38,6 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
         this.handlerExceptionResolver = handlerExceptionResolver;
     }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        // Excluir rutas específicas, como /auth/login
+        return path.startsWith("/auth/login") || path.startsWith("/authWeb");
+    }
 
     @Override
     protected void doFilterInternal(
