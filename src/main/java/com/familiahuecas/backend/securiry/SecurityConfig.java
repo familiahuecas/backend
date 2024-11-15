@@ -27,23 +27,26 @@ public class SecurityConfig{
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	    http.csrf(csrf -> csrf.disable());
+	    http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+	    
+	    http.authorizeHttpRequests(configurer -> 
+	        configurer
+	            .requestMatchers("/auth/**", "/authWeb/**").permitAll()  // Permitir acceso sin autenticación
+	            .anyRequest().authenticated()  // Requerir autenticación para el resto
+	    );
 
-		http.csrf(csrf -> csrf.disable());
-		http.cors(cors -> {
-			try {
-				cors.configurationSource(corsConfigurationSource());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-		http.authorizeHttpRequests(configurer -> configurer.requestMatchers("/auth/**", "/authWeb/**").permitAll()
-				.anyRequest().authenticated());
-		http.sessionManagement(sessionMag -> sessionMag.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		http.authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter,
-				UsernamePasswordAuthenticationFilter.class);
-		return http.build();
+	    http.sessionManagement(sessionMag -> 
+	        sessionMag.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+	    );
 
+	    // Mueve el filtro de autenticación JWT para que se aplique solo a las rutas que lo requieran
+	    http.authenticationProvider(authenticationProvider)
+	        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+	    
+	    return http.build();
 	}
+
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {

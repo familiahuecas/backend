@@ -24,12 +24,12 @@ public class AuthenticationRest {
         try {
             // Autenticar el usuario
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword())
             );
 
             // Cargar los detalles del usuario
             UserDetails userDetails = (UserDetails) authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()))
+                .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()))
                 .getPrincipal();
 
             // Generar el token JWT
