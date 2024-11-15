@@ -23,44 +23,24 @@ else
     OPENVIDU_SERVER="http://localhost:4200/#/"
     SCHEMA="http"
 
-  elif [ "$1" == "cestel" ]; then
-    PUBLIC_IP="10.0.3.200"
-    ESCAPED_PUBLIC_IP="10\.0\.3\.200"
-    API_PUBLIC_PORT="8080"
-    API_INTERNAL_PORT="8443"
-    BACKOFFICE_PORT="5001"
-    MYSQL_VERSION="8.3.0"
-    PROXY_HTTP_PORT="8081"
-    PROXY_HTTPS_PORT="4438"
-    DOMAIN_NAME="visercom.grupocestel.local"
-    ESCAPED_DOMAIN_NAME="visercom\.grupocestel\.local"
-    JDBC_URL="database-visercomcfg"
-    DATABASE_USER="root"
-    DATABASE_PWD="CalleFalsa123"
-    SSL_ALIAS="cestel200"
-    OPENVIDU_SERVER="https://visercom.grupocestel.local/#/"
-    SCHEMA="https"
-
   elif [ "$1" == "prod" ]; then
-    PUBLIC_IP="10.0.3.18"
-    ESCAPED_PUBLIC_IP="10\.0\.3\.18"
+    PUBLIC_IP="82.223.205.118"
+    ESCAPED_PUBLIC_IP="82\.223\.205\.118"
     API_PUBLIC_PORT="8080"
     API_INTERNAL_PORT="8080"
     BACKOFFICE_PORT="5001"
     MYSQL_VERSION="8.3.0"
     PROXY_HTTP_PORT="80"
     PROXY_HTTPS_PORT="443"
-    DOMAIN_NAME="visercom.cestel.es"
-    ESCAPED_DOMAIN_NAME="visercom\.cestel\.es"
-    JDBC_URL="database-visercomcfg"
+    DOMAIN_NAME="cloud.familiahuecas.es"
+    ESCAPED_DOMAIN_NAME="cloud\.familiahuecas\.es"
+    JDBC_URL="database-familiahuecas"
     DATABASE_USER="root"
     DATABASE_PWD="CalleFalsa123"
-    SSL_ALIAS="cestelAWS"
-    OPENVIDU_SERVER="http://visercom.cestel.es/#/"
     SCHEMA="https"
   else
     echo "Usage: $0 environment"
-    echo "* environment: local | cestel | prod"
+    echo "* environment: local | prod"
     exit
   fi
 
@@ -94,22 +74,20 @@ else
 
   sed "s|DATABASE_USER|$DATABASE_USER|g
       s|DATABASE_PWD|$DATABASE_PWD|g
-      s|SSL_ALIAS|$SSL_ALIAS|g
-      s|OPENVIDU_SERVER|$OPENVIDU_SERVER|g
       s|JDBC_URL|$JDBC_URL|g" ./scripts/template/application-template.properties > ./conf/application.properties
 
   echo "====================Building Database======================"
-  docker pull mysql:$MYSQL_VERSION
-  docker tag mysql:$MYSQL_VERSION database-visercomcfg
+#  docker pull mysql:$MYSQL_VERSION
+#  docker tag mysql:$MYSQL_VERSION database-familiahuecas
   echo "====================Building Proxy========================="
-  docker pull nginx:$NGINX_VERSION
-  docker tag nginx:$NGINX_VERSION proxy-visercomcfg
+#  docker pull nginx:$NGINX_VERSION
+#  docker tag nginx:$NGINX_VERSION proxy-familiahuecas
   echo "====================Building Backend======================="
   cd ..
-  docker build . --tag backend-visercomcfg
+#  docker build . --tag backend-familiahuecas
 
   echo "====================Building Backoffice===================="
-  cd ../visercomcfg-web
+  cd ../familiahuecas-frontend
   ./db.sh
   echo "====================Build Done============================="
 fi
