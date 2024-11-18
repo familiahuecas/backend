@@ -1,7 +1,10 @@
 package com.familiahuecas.backend.service;
 
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Optional;
+=======
+>>>>>>> 8d096ce840f0b3b397612da76a4d85092cb4f25e
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,9 +76,12 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+<<<<<<< HEAD
 
 
 	public Optional<User> findByName(String name) {
 		return userRepository.findByName(name);
 	}
+=======
+>>>>>>> 8d096ce840f0b3b397612da76a4d85092cb4f25e
 }
