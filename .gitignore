@@ -40,3 +40,4 @@ build/
 ### Archivos del Sistema Operativo ###
 .DS_Store  # macOS
 Thumbs.db  # Windows
+/familiahuecas-backend/
