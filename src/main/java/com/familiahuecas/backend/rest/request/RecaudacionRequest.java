@@ -6,7 +6,11 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class NumeracionRequest {
+public class RecaudacionRequest {
     private String bar;
+    private int entradaM1;
+    private int salidaM1;
+    private int entradaM2;
+    private int salidaM2;
     
 }

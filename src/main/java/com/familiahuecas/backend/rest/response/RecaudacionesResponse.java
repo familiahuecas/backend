@@ -11,12 +11,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class NumeracionResponse {
+public class RecaudacionesResponse {
     private Long id;
-    private int entrada_m1;
-    private int salida_m1;
-    private int entrada_m2;
-    private int salida_m2;
+    private long maquina1;
+    private long maquina2;
+    private long recaudaciontotal;
+    private long recaudacionparcial;
     private String bar;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDateTime fecha; 

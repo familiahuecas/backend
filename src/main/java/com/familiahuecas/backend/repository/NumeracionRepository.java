@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface NumeracionRepository extends JpaRepository<Numeracion, Long> {
   
-	
+	 Optional<Numeracion> findTopByBarOrderByFechaDesc(String bar);
 }

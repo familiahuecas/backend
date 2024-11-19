@@ -16,11 +16,21 @@ CREATE TABLE 7573756172696f (
 
 -- Tabla intermedia para la relación Many-to-Many (nombre codificado en hexadecimal)
 CREATE TABLE 7573756172696f5f726f6c6573 (
-    usuario_id BIGINT,726f6c6573726f6c6573
+    usuario_id BIGINT,
     rol_id BIGINT,
     PRIMARY KEY (usuario_id, rol_id),
     FOREIGN KEY (usuario_id) REFERENCES 7573756172696f(id) ON DELETE CASCADE,
     FOREIGN KEY (rol_id) REFERENCES 726f6c6573(id) ON DELETE CASCADE
+);
+
+CREATE TABLE `6e756d65726163696f6e` (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  entrada_m1 int(11) NOT NULL,
+  salida_m1 int(11) NOT NULL,
+  entrada_m2 int(11) NOT NULL,
+  salida_m2 int(11) NOT NULL,
+  bar varchar(50) COLLATE latin1_spanish_ci DEFAULT 'lucy',
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insertar roles en la tabla roles (nombre hexadecimal: 726f6c6573)
