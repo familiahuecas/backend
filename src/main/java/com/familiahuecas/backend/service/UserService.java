@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +35,11 @@ public class UserService {
 
 
     public UserResponse saveOrUpdate(User user, Set<Long> roleIds) {
-        // Verificar si el email ya existe
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException("El email ya está en uso: " + user.getEmail());
+        // Verificar si el email ya existe para creación
+        if (user.getId() == null || user.getId() == 0) {
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                throw new UserAlreadyExistsException("El email ya está en uso: " + user.getEmail());
+            }
         }
 
         // Asignar roles al usuario
@@ -45,9 +49,16 @@ public class UserService {
                 .collect(Collectors.toSet());
         user.setRoles(roles);
 
-        
-     // Codificar la contraseña antes de guardar
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Codificar la contraseña si está presente
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else if (user.getId() != null) {
+            // Si es una actualización y la contraseña no se proporciona, mantener la existente
+            user.setPassword(userRepository.findById(user.getId())
+                    .map(User::getPassword)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + user.getId())));
+        }
+
         // Guardar el usuario
         User savedUser = userRepository.save(user);
 
@@ -65,6 +76,7 @@ public class UserService {
                 "OK"
         );
     }
+
     
     public void deleteUserById(Long id) {
         User user = userRepository.findById(id)
@@ -81,5 +93,31 @@ public class UserService {
 	public Optional<User> findByName(String name) {
 		return userRepository.findByName(name);
 	}
+
+
+	public Page<UserResponse> getAllPaginated(Pageable pageable) {
+	    // Obtener usuarios paginados desde el repositorio
+	    Page<User> usersPage = userRepository.findAll(pageable);
+
+	    // Convertir las entidades en UserResponse, incluyendo la conversión de roles
+	    return usersPage.map(this::convertToUserResponse);
+	}
+
+	private UserResponse convertToUserResponse(User user) {
+	    // Convertir Set<Rol> a Set<String> con los nombres de los roles
+	    Set<String> roleNames = user.getRoles().stream()
+	            .map(Rol::getNombre) // Asumiendo que Rol tiene un método getNombre()
+	            .collect(Collectors.toSet());
+
+	    return new UserResponse(
+	            user.getId(),
+	            user.getName(),
+	            user.getEmail(),
+	            user.isEnabled(),
+	            roleNames, // Pasar el Set<String> con los nombres de los roles
+	            "OK" // Mensaje fijo o dinámico si es necesario
+	    );
+	}
+
 
 }

@@ -122,13 +122,13 @@ public class NumeracionService {
 		    // Recuperar las numeraciones de manera paginada y ordenadas
 		    Page<Numeracion> numeracionesPage = numeracionRepository.findAll(sortedPageable);
 
-		    System.out.println("Numeraciones recuperadas:");
-		    numeracionesPage.forEach(numeracion -> {
-		        System.out.println("ID: " + numeracion.getId() + 
-		                           ", Bar: " + numeracion.getBar() + 
-		                           ", EntradaM1: " + numeracion.getEntradaM1() + 
-		                           ", Fecha: " + numeracion.getFecha());
-		    });
+//		    System.out.println("Numeraciones recuperadas:");
+//		    numeracionesPage.forEach(numeracion -> {
+//		        System.out.println("ID: " + numeracion.getId() + 
+//		                           ", Bar: " + numeracion.getBar() + 
+//		                           ", EntradaM1: " + numeracion.getEntradaM1() + 
+//		                           ", Fecha: " + numeracion.getFecha());
+//		    });
 
 		    List<RecaudacionesResponse> recaudacionesResponses = new ArrayList<>();
 		    List<Numeracion> numeraciones = numeracionesPage.getContent();
@@ -141,9 +141,9 @@ public class NumeracionService {
 		        registroAnterior = numeraciones.get(i - 1);
 
 		        // Depurar los valores antes de calcular
-		        System.out.println("Cálculo entre:");
-		        System.out.println("Registro Actual ID: " + numeracionActual.getId() + ", EntradaM1: " + numeracionActual.getEntradaM1());
-		        System.out.println("Registro Anterior ID: " + registroAnterior.getId() + ", EntradaM1: " + registroAnterior.getEntradaM1());
+//		        System.out.println("Cálculo entre:");
+//		        System.out.println("Registro Actual ID: " + numeracionActual.getId() + ", EntradaM1: " + numeracionActual.getEntradaM1());
+//		        System.out.println("Registro Anterior ID: " + registroAnterior.getId() + ", EntradaM1: " + registroAnterior.getEntradaM1());
 
 		        // Calcular la recaudación con el registro anterior
 		        RecaudacionesResponse recaudacion = calculateRec(numeracionActual, registroAnterior);

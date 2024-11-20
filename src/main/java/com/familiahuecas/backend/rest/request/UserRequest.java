@@ -7,10 +7,11 @@ import java.util.Set;
 @Getter
 @Setter
 public class UserRequest {
+	private long id;
     private String name;
     private String email;
     private String password;
     private Boolean enabled;
-    private Set<Long> roleIds; // IDs de los roles asignados
+    private Set<Long> roles; // IDs de los roles asignados
     private String messaje; // Campo para el mensaje de error
 }
