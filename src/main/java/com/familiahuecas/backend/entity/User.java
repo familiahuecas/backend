@@ -2,6 +2,7 @@ package com.familiahuecas.backend.entity;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,13 +19,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "7573756172696f") // Nombre ofuscado para la tabla 'usuario'
+@Table(name = "7573756172696f") // Nombre ofuscado
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,7 +36,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name ="nombre")
+    @Column(name = "nombre")
     private String name;
 
     @Column(unique = true, nullable = false)
@@ -48,15 +50,17 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "7573756172696f5f726f6c6573", // Nombre ofuscado para la tabla intermedia 'usuario_roles'
+        name = "7573756172696f5f726f6c6573", // Nombre ofuscado para la tabla intermedia
         joinColumns = @JoinColumn(name = "usuario_id"),
         inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
-   
-
     private Set<Rol> roles = new HashSet<>();
 
-    // Implementación de UserDetails
+    // Relación inversa con UsuariosConAdelanto
+    @OneToMany(mappedBy = "usuario")
+    private List<UsuariosConAdelanto> adelantos;
+
+    // Métodos de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
@@ -89,3 +93,4 @@ public class User implements UserDetails {
         return enabled;
     }
 }
+

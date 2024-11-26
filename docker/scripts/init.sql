@@ -30,8 +30,39 @@ CREATE TABLE `6e756d65726163696f6e` (
   entrada_m2 int(11) NOT NULL,
   salida_m2 int(11) NOT NULL,
   bar varchar(50) COLLATE latin1_spanish_ci DEFAULT 'lucy',
-  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  	
 );
+
+CREATE TABLE `7573756172696f73636f6e6164656c616e746f` (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id BIGINT NOT NULL,
+  cantidad_asignada float NOT NULL DEFAULT '0'
+);
+
+CREATE TABLE `636f6e636570746f676173746f6164656c616e746f` (
+   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   descripcion varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+   idusuariosconadelanto BIGINT NOT NULL,
+   total float NOT NULL,
+   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE 646f63756d656e746f73 (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    path VARCHAR(500) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE 646f63756d656e746f73 (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    path VARCHAR(500) DEFAULT NULL, -- Las carpetas no necesitan un path físico
+    is_folder BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si es una carpeta
+    parent_id BIGINT DEFAULT NULL, -- Referencia al padre
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_parent FOREIGN KEY (parent_id) REFERENCES documents(id) ON DELETE CASCADE
+);
+
 
 -- Insertar roles en la tabla roles (nombre hexadecimal: 726f6c6573)
 INSERT INTO 726f6c6573 (nombre) VALUES ('SUPERADMIN');
