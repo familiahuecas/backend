@@ -32,7 +32,7 @@ public class SecurityConfig{
 	    
 	    http.authorizeHttpRequests(configurer -> 
 	        configurer
-	            .requestMatchers("/auth/**", "/authWeb/**").permitAll()  // Permitir acceso sin autenticación
+	            .requestMatchers("/error", "/auth/**", "/authWeb/**").permitAll()  // Permitir acceso sin autenticación
 	            .anyRequest().authenticated()  // Requerir autenticación para el resto
 	    );
 

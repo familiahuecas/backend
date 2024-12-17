@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,24 +107,48 @@ public class DocumentosRest {
     @GetMapping("/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) {
         try {
+            // Buscar el documento en la base de datos
             Documento document = documentoService.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Documento no encontrado con ID: " + id));
 
+            // Validar la existencia del archivo
             Path path = Paths.get(document.getPath());
             if (!Files.exists(path)) {
+                System.err.println("Archivo no encontrado: " + path.toAbsolutePath());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Archivo no encontrado en el servidor");
             }
 
+            // Leer el contenido del archivo
             byte[] fileContent = Files.readAllBytes(path);
+
+            // Determinar el tipo MIME
+            String mimeType = Files.probeContentType(path);
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+
+            // Logs de depuración
+            System.out.println("Iniciando descarga del archivo: " + document.getNombre());
+            System.out.println("Ruta del archivo: " + document.getPath());
+            System.out.println("Tamaño del archivo: " + fileContent.length + " bytes");
+            System.out.println("Tipo MIME: " + mimeType);
+
+            // Construir la respuesta
             return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(mimeType))
                     .header("Content-Disposition", "attachment; filename=\"" + document.getNombre() + "\"")
                     .body(fileContent);
+
         } catch (IllegalArgumentException e) {
+            System.err.println("Error de cliente: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
+            System.err.println("Error interno del servidor: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al descargar el archivo: " + e.getMessage());
         }
     }
+
 
     // ------------------------------
     // Métodos de Consulta
@@ -174,4 +199,24 @@ public class DocumentosRest {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el hijo: " + e.getMessage());
         }
     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteDocument(@PathVariable Long id) {
+        try {
+            Documento document = documentoService.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Documento no encontrado con ID: " + id));
+
+            if (document.isEsCarpeta()) {
+                documentoService.deleteFolderRecursively(document);
+            } else {
+                documentoService.deleteFile(document);
+            }
+
+            return ResponseEntity.ok("Documento eliminado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el documento: " + e.getMessage());
+        }
+    }
+
 }

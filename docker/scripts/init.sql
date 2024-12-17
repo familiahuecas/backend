@@ -5,7 +5,7 @@ CREATE TABLE 726f6c6573 (
 );
 
 -- Tabla para los usuarios (nombre codificado en hexadecimal)
-CREATE TABLE 7573756172696f (
+CREATE TABLE `7573756172696f` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -15,7 +15,7 @@ CREATE TABLE 7573756172696f (
 );
 
 -- Tabla intermedia para la relación Many-to-Many (nombre codificado en hexadecimal)
-CREATE TABLE 7573756172696f5f726f6c6573 (
+CREATE TABLE `7573756172696f5f726f6c6573` (
     usuario_id BIGINT,
     rol_id BIGINT,
     PRIMARY KEY (usuario_id, rol_id),
@@ -47,21 +47,24 @@ CREATE TABLE `636f6e636570746f676173746f6164656c616e746f` (
    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE 646f63756d656e746f73 (
+CREATE TABLE `646f63756d656e746f73` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     path VARCHAR(500) NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE 646f63756d656e746f73 (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    path VARCHAR(500) DEFAULT NULL, -- Las carpetas no necesitan un path físico
-    is_folder BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si es una carpeta
-    parent_id BIGINT DEFAULT NULL, -- Referencia al padre
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_parent FOREIGN KEY (parent_id) REFERENCES documents(id) ON DELETE CASCADE
+CREATE TABLE `646f63756d656e746f73` (
+	`id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`nombre` VARCHAR(255) NOT NULL,
+	`path` VARCHAR(500) NULL DEFAULT NULL ,
+	`is_folder` TINYINT(1) NOT NULL DEFAULT '0',
+	`parent_id` BIGINT(20) NULL DEFAULT NULL,
+	`fecha` TIMESTAMP NULL DEFAULT current_timestamp(),
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `fk_parent` (`parent_id`) USING BTREE,
+	CONSTRAINT `fk_parent` FOREIGN KEY (`parent_id`) REFERENCES `hollowfamily`.`646f63756d656e746f73` (`id`) ON UPDATE RESTRICT ON DELETE CASCADE
 );
+
 
 
 -- Insertar roles en la tabla roles (nombre hexadecimal: 726f6c6573)

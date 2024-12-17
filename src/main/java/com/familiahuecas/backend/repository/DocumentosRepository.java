@@ -15,6 +15,10 @@ public interface DocumentosRepository extends JpaRepository<Documento, Long> {
 	List<Documento> findByParentIsNull();
 
 	List<Documento> findByParent(Documento documento);
+
+	List<Documento> findByParentId(Long id);
+
+	
   
 	
 }

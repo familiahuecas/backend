@@ -1,5 +1,9 @@
 package com.familiahuecas.backend.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -156,4 +160,41 @@ public class DocumentosService {
 
         documentosRepository.save(parent);
     }
+    /**
+     * Eliminar un archivo
+     */
+    public void deleteFile(Documento document) throws IOException {
+        Path path = Paths.get(document.getPath());
+        if (Files.exists(path)) {
+            Files.delete(path); // Elimina el archivo del sistema de archivos
+        }
+        documentosRepository.deleteById(document.getId()); // Elimina el registro de la base de datos
+        log.info("Archivo eliminado: {}", document.getNombre());
+    }
+
+    /**
+     * Eliminar una carpeta y su contenido de forma recursiva
+     */
+    public void deleteFolderRecursively(Documento folder) throws IOException {
+        // Buscar los hijos de la carpeta
+        List<Documento> children = documentosRepository.findByParentId(folder.getId());
+        for (Documento child : children) {
+            if (child.isEsCarpeta()) {
+                // Llamada recursiva para eliminar subcarpetas
+                deleteFolderRecursively(child);
+            } else {
+                // Eliminar archivos
+                deleteFile(child);
+            }
+        }
+
+        // Eliminar la carpeta misma
+/*        Path path = Paths.get(folder.getPath());
+        if (Files.exists(path)) {
+            Files.delete(path); // Elimina la carpeta del sistema de archivos
+        }*/
+        documentosRepository.deleteById(folder.getId()); // Elimina el registro de la base de datos
+        log.info("Carpeta eliminada: {}", folder.getNombre());
+    }
+
 }

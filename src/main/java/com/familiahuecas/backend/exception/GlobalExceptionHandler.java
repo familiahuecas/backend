@@ -4,8 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -29,5 +28,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)	
     public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException ex) {
         return ResponseEntity.status(401).body("El token JWT ha expirado: " + ex.getMessage());
+    }
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<String> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+        return ResponseEntity.badRequest().body("El archivo excede el tamaño máximo permitido de 30 MB.");
     }
 }
