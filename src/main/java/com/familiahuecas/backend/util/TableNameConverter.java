@@ -23,9 +23,9 @@ public class TableNameConverter {
 
     public static void main(String[] args) {
         // Ejemplo de uso
-        String originalName = "documentos";
+        String originalName = "ubicacion";
         String encodedName = encodeToHex(originalName);
-        String decodedName = decodeFromHex("646f63756d656e746f73");
+        String decodedName = decodeFromHex("756269636163696f6e");
 
         System.out.println("Original: " + originalName);
         System.out.println("Hexadecimal: " + encodedName);

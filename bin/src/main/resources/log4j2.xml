@@ -1,0 +1,68 @@
+<Configuration status="INFO" strict="true" monitorInterval="10">
+
+    <Properties>
+        <Property name="logPath">/var/log/hollow/hollowfamily</Property>
+        <Property name="appName">hollowfamily</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%date [%t] %X{user}@%X{addr} %-5level %logger{1.} - %message%n" />
+        </Console>
+
+        <RollingFile name="SERVER"
+                     fileName="${logPath}/${appName}.log"
+                     filePattern="${logPath}/${appName}.%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout pattern="%date [%t] %X{user}@%X{addr} %-5level %logger{1.} - %message%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="${appName}*.log*">
+                        <IfAny>
+                            <IfAccumulatedFileCount exceeds="2" />
+                            <IfLastModified age="2d" />
+                        </IfAny>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <Syslog name="SERVER_SYSLOG" format="RFC5424" host="localhost" port="514"
+                protocol="UDP" appName="sercomcfg" includeMDC="true" charset="UTF-8"
+                facility="LOCAL0" newLine="true">
+            <PatternLayout pattern="%date %t %X{user}@%X{addr} %-5level %logger{1.} - %message%n"/>
+        </Syslog>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.familiahuecas" level="trace" additivity="false">
+            <AppenderRef ref="SERVER" />
+            <AppenderRef ref="SERVER_SYSLOG" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <!-- Hibernate SQL logging -->
+        <Logger name="org.hibernate.SQL" level="info" additivity="false">
+            <AppenderRef ref="SERVER" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <!-- Hibernate type descriptor logging (optional) -->
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
+            <AppenderRef ref="SERVER" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+        <Logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="trace" additivity="false">
+            <AppenderRef ref="SERVER" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <!-- Root Logger Configuration -->
+        <Root level="info">
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="SERVER" />
+        </Root>
+    </Loggers>
+</Configuration>

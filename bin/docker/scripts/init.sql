@@ -65,12 +65,6 @@ CREATE TABLE `646f63756d656e746f73` (
 	CONSTRAINT `fk_parent` FOREIGN KEY (`parent_id`) REFERENCES `hollowfamily`.`646f63756d656e746f73` (`id`) ON UPDATE RESTRICT ON DELETE CASCADE
 );
 
--- Tabla para las ubicaciones (nombre codificado en hexadecimal)
-CREATE TABLE `756269636163696f6e` (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL UNIQUE,
-    ubicacion VARCHAR(255) NOT NULL UNIQUE
-);
 
 
 -- Insertar roles en la tabla roles (nombre hexadecimal: 726f6c6573)
