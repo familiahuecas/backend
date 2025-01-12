@@ -87,3 +87,7 @@ VALUES ('vmhuecas', 'victor.huecas@gmail.com', '$2a$10$X8O9eFtxFbPVO7RQ6XFl7uuM1
 INSERT INTO 7573756172696f5f726f6c6573 (usuario_id, rol_id) 
 VALUES (1, 1); -- Ajusta el usuario_id según el ID generado automáticamente
 
+ALTER TABLE `756269636163696f6e`
+ADD COLUMN foto MEDIUMTEXT;
+
+

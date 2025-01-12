@@ -10,5 +10,7 @@ public class UbicacionRequest {
 	private String nombre;
 
 	private String ubicacion;
+	
+	private String foto;
 
 }

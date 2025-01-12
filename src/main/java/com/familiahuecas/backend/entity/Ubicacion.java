@@ -17,5 +17,8 @@ public class Ubicacion {
 
     @Column(nullable = false, unique = true)
     private String ubicacion;
+    
+    @Column()
+    private String foto;
 }
 

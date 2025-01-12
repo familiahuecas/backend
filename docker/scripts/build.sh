@@ -84,10 +84,10 @@ else
 #  docker tag nginx:$NGINX_VERSION proxy-familiahuecas
   echo "====================Building Backend======================="
   cd ..
-#  docker build . --tag backend-familiahuecas
+  docker build . --tag backend-familiahuecas
 
   echo "====================Building Backoffice===================="
-  cd ../familiahuecas-frontend
-  ./db.sh
+#  cd ../frontend
+#  ./db.sh
   echo "====================Build Done============================="
 fi

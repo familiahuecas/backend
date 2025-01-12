@@ -7,5 +7,7 @@ import com.familiahuecas.backend.entity.Ubicacion;
 
 @Repository
 public interface UbicacionRepository extends JpaRepository<Ubicacion, Long> {
+
+	Ubicacion findByNombre(String nombre);
     // No necesitas definir findAllById, ya que es parte de JpaRepository
 }
