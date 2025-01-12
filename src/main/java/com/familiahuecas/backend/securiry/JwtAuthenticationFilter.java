@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         // Excluir rutas específicas, como /auth/login
-        return path.startsWith("/auth/login") || path.startsWith("/authWeb");
+        return path.startsWith("/auth/login") || path.equals("/auth/login/sequence")|| path.startsWith("/authWeb");
     }
 
     @Override

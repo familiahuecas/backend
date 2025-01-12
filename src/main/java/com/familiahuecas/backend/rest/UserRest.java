@@ -89,7 +89,8 @@ public class UserRest {
                 user.getEmail(),
                 user.getEnabled(),
                 roleNames, // Pasar el Set<String> con los nombres de los roles
-                "OK"
+                "OK",
+                user.getSecuencia()
             );
         }).collect(Collectors.toList());
 

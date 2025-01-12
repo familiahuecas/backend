@@ -16,4 +16,5 @@ public class UserResponse {
     private Boolean enabled;
     private Set<String> roles;
     private String messaje; // Campo para el mensaje de éxito
+    private String secuencia;
 }

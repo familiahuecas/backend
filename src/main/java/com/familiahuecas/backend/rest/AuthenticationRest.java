@@ -1,18 +1,23 @@
 package com.familiahuecas.backend.rest;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.familiahuecas.backend.entity.Rol;
 import com.familiahuecas.backend.entity.User;
 import com.familiahuecas.backend.rest.request.AuthRequest;
 import com.familiahuecas.backend.rest.response.AuthResponse;
@@ -34,39 +39,60 @@ public class AuthenticationRest {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
-            // Autenticar el usuario
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword())
-            );
-
-            // Cargar los detalles del usuario
-            UserDetails userDetails = (UserDetails) authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()))
-                .getPrincipal();
-
-            // Generar el token JWT
-            String token = jwtService.generateToken(userDetails);
-            
-            // Obtener la información del usuario y transformar en UserResponse
-            User user = userService.findByName(authRequest.getName()).get();
-            Set<String> roleNames = user.getRoles().stream()
-                .map(role -> role.getNombre())
-                .collect(Collectors.toSet());
-
-            UserResponse userResponse = new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getEnabled(),
-                roleNames,
-                "¡Inicio de sesión exitoso!" // Mensaje de éxito
-            );
-
-            // Crear la respuesta con el token y UserResponse
-            AuthResponse authResponse = new AuthResponse(token, userResponse);
-            return ResponseEntity.ok(authResponse);
+            if (authRequest.getName() != null && authRequest.getPassword() != null) {
+                return authenticateWithUsernameAndPassword(authRequest);
+            } else if (authRequest.getSecuencia() != null) {
+                return authenticateWithSequence(authRequest.getSecuencia());
+            } else {
+                return ResponseEntity.badRequest().body("Parámetros insuficientes para el inicio de sesión.");
+            }
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("Credenciales inválidas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas.");
         }
     }
+
+    private ResponseEntity<?> authenticateWithUsernameAndPassword(AuthRequest authRequest) {
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                authRequest.getName(), authRequest.getPassword()
+            )
+        );
+
+        // Obtener el usuario
+        User user = userService.findByName(authRequest.getName())
+            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        return buildAuthResponse(user, "¡Inicio de sesión exitoso!");
+    }
+
+    private ResponseEntity<?> authenticateWithSequence(String sequence) {
+        User user = userService.findBySequence(sequence);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Secuencia no encontrada.");
+        }
+
+        return buildAuthResponse(user, "¡Inicio de sesión exitoso por secuencia!");
+    }
+
+    private ResponseEntity<?> buildAuthResponse(User user, String message) {
+        String token = jwtService.generateToken(user);
+
+        Set<String> roleNames = user.getRoles().stream()
+            .map(Rol::getNombre)
+            .collect(Collectors.toSet());
+
+        UserResponse userResponse = new UserResponse(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getEnabled(),
+            roleNames,
+            message,
+            user.getSecuencia()
+        );
+
+        AuthResponse authResponse = new AuthResponse(token, userResponse);
+        return ResponseEntity.ok(authResponse);
+    }
+
 }

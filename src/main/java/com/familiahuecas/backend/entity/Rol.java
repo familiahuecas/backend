@@ -3,6 +3,8 @@ package com.familiahuecas.backend.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +29,7 @@ public class Rol {
 
     @Column(unique = true, nullable = false)
     private String nombre;
-
+    @JsonBackReference
     @ManyToMany(mappedBy = "roles")
     private Set<User> usuarios = new HashSet<>();
 }

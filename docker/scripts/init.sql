@@ -90,4 +90,11 @@ VALUES (1, 1); -- Ajusta el usuario_id según el ID generado automáticamente
 ALTER TABLE `756269636163696f6e`
 ADD COLUMN foto MEDIUMTEXT;
 
+ALTER TABLE `7573756172696f`
+ADD COLUMN secuencia VARCHAR(4);
+
+INSERT INTO `7573756172696f` (secuencia) 
+VALUES (1211) where nombre='victor';
+
+
 

@@ -14,4 +14,5 @@ public class UserRequest {
     private Boolean enabled;
     private Set<Long> roles; // IDs de los roles asignados
     private String messaje; // Campo para el mensaje de error
+    private String secuencia;
 }

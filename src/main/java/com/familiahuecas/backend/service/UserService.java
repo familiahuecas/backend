@@ -73,7 +73,8 @@ public class UserService {
                 savedUser.getEmail(),
                 savedUser.getEnabled(),
                 roleNames,
-                "OK"
+                "OK",
+                savedUser.getSecuencia()
         );
     }
 
@@ -115,8 +116,14 @@ public class UserService {
 	            user.getEmail(),
 	            user.isEnabled(),
 	            roleNames, // Pasar el Set<String> con los nombres de los roles
-	            "OK" // Mensaje fijo o dinámico si es necesario
+	            "OK" ,// Mensaje fijo o dinámico si es necesario
+	            user.getSecuencia()
 	    );
+	}
+
+
+	public User findBySequence(String sequence) {
+		return userRepository.findBySecuencia(sequence);
 	}
 
 

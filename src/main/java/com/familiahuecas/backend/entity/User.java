@@ -10,6 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,6 +49,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private Boolean enabled = true;
+    
+    @Column()
+    private String secuencia;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -54,6 +59,7 @@ public class User implements UserDetails {
         joinColumns = @JoinColumn(name = "usuario_id"),
         inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
+    @JsonManagedReference
     private Set<Rol> roles = new HashSet<>();
 
     // Relación inversa con UsuariosConAdelanto
