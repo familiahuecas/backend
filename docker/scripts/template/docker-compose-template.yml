@@ -57,7 +57,7 @@ services:
      
 
   
-  proxy-visercomcfg:
+  proxy-familiahuecas:
     container_name: proxy-familiahuecas
     image: proxy-familiahuecas
     ports:

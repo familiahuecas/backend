@@ -96,5 +96,9 @@ ADD COLUMN secuencia VARCHAR(4);
 INSERT INTO `7573756172696f` (secuencia) 
 VALUES (1211) where nombre='victor';
 
+UPDATE `7573756172696f`
+SET secuencia = '3333'
+WHERE nombre = 'victor';
+
 
 

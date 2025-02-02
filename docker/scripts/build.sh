@@ -77,17 +77,17 @@ else
       s|JDBC_URL|$JDBC_URL|g" ./scripts/template/application-template.properties > ./conf/application.properties
 
   echo "====================Building Database======================"
-#  docker pull mysql:$MYSQL_VERSION
-#  docker tag mysql:$MYSQL_VERSION database-familiahuecas
+  docker pull mysql:$MYSQL_VERSION
+  docker tag mysql:$MYSQL_VERSION database-familiahuecas
   echo "====================Building Proxy========================="
-#  docker pull nginx:$NGINX_VERSION
-#  docker tag nginx:$NGINX_VERSION proxy-familiahuecas
+  docker pull nginx:$NGINX_VERSION
+  docker tag nginx:$NGINX_VERSION proxy-familiahuecas
   echo "====================Building Backend======================="
   cd ..
   docker build . --tag backend-familiahuecas
 
   echo "====================Building Backoffice===================="
-#  cd ../frontend
-#  ./db.sh
+  cd ../frontend
+  ./db.sh
   echo "====================Build Done============================="
 fi
