@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.familiahuecas.backend.entity.ConceptoGastoAdelanto;
+import com.familiahuecas.backend.entity.DetalleAdelanto;
 import com.familiahuecas.backend.entity.User;
 import com.familiahuecas.backend.entity.UsuariosConAdelanto;
 import com.familiahuecas.backend.repository.UserRepository;
@@ -29,17 +30,24 @@ public class UsuariosConAdelantoService {
                     .mapToDouble(ConceptoGastoAdelanto::getTotal)
                     .sum();
             int numeroDeApuntes = usuario.getConceptosGasto().size();
-            float cantidadRestante = usuario.getCantidadAsignada() - (float) totalGastado;
+
+            // 🔁 Sumar los anticipos reales desde detalleadelanto
+            double totalAnticipos = usuario.getUsuario().getAnticipos().stream()
+                    .mapToDouble(DetalleAdelanto::getCantidad)
+                    .sum();
+
+            float cantidadRestante = (float) totalAnticipos - (float) totalGastado;
 
             return new UsuarioConAdelantoResponse(
                 usuario.getUsuario().getId(),
                 usuario.getUsuario().getName(),
-                usuario.getCantidadAsignada(),
+                (float) totalAnticipos,
                 cantidadRestante,
                 numeroDeApuntes
             );
         }).collect(Collectors.toList());
     }
+
     public UsuarioConAdelantoResponse saveOrUpdate(UsuarioConAdelantoRequest request) {
         // Buscar usuario relacionado
         User usuario = userRepository.findById(request.getIdUsuario())

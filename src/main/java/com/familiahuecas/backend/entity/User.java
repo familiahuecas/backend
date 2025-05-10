@@ -73,6 +73,10 @@ public class User implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getNombre()))
                 .collect(Collectors.toSet());
     }
+    
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private List<DetalleAdelanto> anticipos;
+
 
     @Override
     public String getUsername() {

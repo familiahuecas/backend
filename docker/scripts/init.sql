@@ -71,6 +71,17 @@ CREATE TABLE `756269636163696f6e` (
     nombre VARCHAR(255) NOT NULL UNIQUE,
     ubicacion VARCHAR(255) NOT NULL UNIQUE
 );
+-- Tabla para el detalle del anticipo
+CREATE TABLE `646574616c6c656164656c616e746f` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `usuario_id` BIGINT NOT NULL,
+  `cantidad` FLOAT NOT NULL DEFAULT 0,
+  `descripcion` VARCHAR(255) NOT NULL,
+  `fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_detalle_usuario` FOREIGN KEY (`usuario_id`)
+    REFERENCES `7573756172696f` (`id`)
+);
 
 
 -- Insertar roles en la tabla roles (nombre hexadecimal: 726f6c6573)

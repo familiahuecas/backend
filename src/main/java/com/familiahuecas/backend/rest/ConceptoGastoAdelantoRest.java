@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,17 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.familiahuecas.backend.rest.request.ConceptoGastoAdelantoRequest;
 import com.familiahuecas.backend.rest.response.ConceptoGastoAdelantoResponse;
+import com.familiahuecas.backend.securiry.JwtService;
 import com.familiahuecas.backend.service.ConceptoGastoAdelantoService;
+import com.familiahuecas.backend.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/conceptos")
 public class ConceptoGastoAdelantoRest {
 
     private final ConceptoGastoAdelantoService conceptoGastoAdelantoService;
 
-    public ConceptoGastoAdelantoRest(ConceptoGastoAdelantoService conceptoGastoAdelantoService) {
+   /* public ConceptoGastoAdelantoRest(ConceptoGastoAdelantoService conceptoGastoAdelantoService) {
         this.conceptoGastoAdelantoService = conceptoGastoAdelantoService;
-    }
+    }*/
 
     @GetMapping("/list")
     public ResponseEntity<Page<ConceptoGastoAdelantoResponse>> getAllConceptos(

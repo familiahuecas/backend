@@ -48,7 +48,12 @@ public class UserService {
                         .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado con ID: " + roleId)))
                 .collect(Collectors.toSet());
         user.setRoles(roles);
-
+     // Si es una actualización, mantener la secuencia existente
+        if (user.getId() != null) {
+            userRepository.findById(user.getId()).ifPresent(existingUser -> {
+                user.setSecuencia(existingUser.getSecuencia());
+            });
+        }
         // Codificar la contraseña si está presente
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
